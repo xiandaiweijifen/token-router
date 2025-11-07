@@ -54,6 +54,12 @@ BASE_URL=http://localhost:8000 ./scripts/run_sample.sh
 
 调度器会优先选择剩余 quota 最大、且能够满足请求 token 数的节点（最大剩余优先）。这种策略在满足需求的前提下，尽量把大请求放在空间最充足的节点上，减少碎片化，达到更高的资源利用率。当出现多个剩余相同的候选节点时，会通过轮询（round-robin）做 tie-break，避免负载集中在同一个节点。
 
+## Future Improvements
+
+- 支持更细粒度的锁或分片，降低高并发下的单锁竞争。
+- 将配置与监控指标持久化，方便多实例或持久化部署。
+- 引入更丰富的调度策略（例如动态权重、负载回压），在极端流量下调整节点利用率。
+
 ## Specification
 
 任务背景、接口语义与实现记录详见 `routing.md`，其中的 `Implementation Notes` 会随着开发阶段持续更新。
