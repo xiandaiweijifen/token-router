@@ -1,22 +1,24 @@
+import asyncio
+
 from httpx import ASGITransport, AsyncClient
 import pytest
-import pytest_asyncio
 
 from app import routes
 from app.main import app, allocator_dependency
 from app.token_allocator import TokenAllocator
 
 
-@pytest_asyncio.fixture()
-async def client() -> AsyncClient:
+@pytest.fixture()
+def client() -> AsyncClient:
     allocator = TokenAllocator(node_count=2, node_quota=100)
     app.dependency_overrides[routes.get_allocator] = lambda: allocator
 
     transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://testserver") as test_client:
-        yield test_client
+    test_client = AsyncClient(transport=transport, base_url="http://testserver")
+    yield test_client
 
     app.dependency_overrides[routes.get_allocator] = allocator_dependency
+    asyncio.run(test_client.aclose())
 
 
 @pytest.mark.asyncio
