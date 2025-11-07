@@ -6,7 +6,8 @@ Token allocation service with per-node quota, concurrency safety, and 429 overlo
 
 1. 创建虚拟环境（可选）: `python -m venv .venv && source .venv/bin/activate`
 2. 安装依赖: `pip install -r requirements.txt`
-3. 启动开发服务器: `uvicorn app.main:app --reload`
+3. 运行测试: `pytest -q`
+4. 启动开发服务器: `uvicorn app.main:app --reload`
 
 服务启动后可通过 `GET /health` 验证运行状态。
 
@@ -51,7 +52,7 @@ BASE_URL=http://localhost:8000 ./scripts/run_sample.sh
 
 ## Allocation Strategy
 
-调度器会优先选择剩余 quota 最大、且能够满足请求 token 数的节点（最大剩余优先）。这种策略在满足需求的前提下，尽量把大请求放在空间最充足的节点上，减少碎片化，达到更高的资源利用率。
+调度器会优先选择剩余 quota 最大、且能够满足请求 token 数的节点（最大剩余优先）。这种策略在满足需求的前提下，尽量把大请求放在空间最充足的节点上，减少碎片化，达到更高的资源利用率。当出现多个剩余相同的候选节点时，会通过轮询（round-robin）做 tie-break，避免负载集中在同一个节点。
 
 ## Specification
 
