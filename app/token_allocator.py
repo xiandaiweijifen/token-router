@@ -48,6 +48,7 @@ class TokenAllocator:
 
         self._lock = Lock()
         self._node_quota = node_quota
+        self._tie_break_counter = 0
         self._remaining: List[int] = [node_quota for _ in range(node_count)]
         self._allocations: Dict[str, AllocationRecord] = {}
 
@@ -102,10 +103,20 @@ class TokenAllocator:
 
     def _select_node(self, token_count: int) -> int | None:
         """Pick the node with the most remaining capacity that can satisfy the request."""
-        candidate = None
+        best_candidates = []
         max_remaining = -1
         for node_id, remaining in enumerate(self._remaining):
-            if remaining >= token_count and remaining > max_remaining:
-                candidate = node_id
+            if remaining < token_count:
+                continue
+            if remaining > max_remaining:
+                best_candidates = [node_id]
                 max_remaining = remaining
-        return candidate
+            elif remaining == max_remaining:
+                best_candidates.append(node_id)
+
+        if not best_candidates:
+            return None
+
+        selected_index = best_candidates[self._tie_break_counter % len(best_candidates)]
+        self._tie_break_counter += 1
+        return selected_index

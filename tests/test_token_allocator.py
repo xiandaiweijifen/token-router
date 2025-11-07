@@ -59,3 +59,20 @@ def test_allocator_picks_node_with_most_remaining_capacity() -> None:
     # Node 2 retains the full 100 quota before this request, so it should be chosen.
     assert result.node_id == 2
     assert result.remaining_quota == 50
+
+
+def test_allocator_round_robins_among_equal_nodes() -> None:
+    allocator = TokenAllocator(node_count=2, node_quota=100)
+
+    first = allocator.allocate("req-1", 10)
+    allocator.free("req-1")
+
+    second = allocator.allocate("req-2", 10)
+    allocator.free("req-2")
+
+    third = allocator.allocate("req-3", 10)
+    allocator.free("req-3")
+
+    assert first.node_id == 0
+    assert second.node_id == 1
+    assert third.node_id == 0
