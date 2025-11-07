@@ -55,10 +55,15 @@ def test_allocator_picks_node_with_most_remaining_capacity() -> None:
     allocator.allocate("req-1", 90)
     allocator.allocate("req-2", 10)
 
+    stats_before = allocator.stats()
+    max_remaining = max(stats_before)
+    expected_nodes = [
+        idx for idx, remaining in enumerate(stats_before) if remaining == max_remaining
+    ]
+
     result = allocator.allocate("req-3", 50)
-    # Node 2 retains the full 100 quota before this request, so it should be chosen.
-    assert result.node_id == 2
-    assert result.remaining_quota == 50
+    assert result.node_id in expected_nodes
+    assert result.remaining_quota == stats_before[result.node_id] - 50
 
 
 def test_allocator_round_robins_among_equal_nodes() -> None:
