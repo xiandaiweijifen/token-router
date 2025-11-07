@@ -49,6 +49,10 @@ BASE_URL=http://localhost:8000 ./scripts/run_sample.sh
 
 脚本按顺序发送 10 条 `/alloc`、`/free` 请求，输出每次的 JSON 响应，用于回归验证。Windows PowerShell 如需运行，可安装 Git Bash 后执行，或改用文档中的 PowerShell 函数（`Invoke-Alloc`/`Invoke-Free`）逐条重放。
 
+## Allocation Strategy
+
+调度器会优先选择剩余 quota 最大、且能够满足请求 token 数的节点（最大剩余优先）。这种策略在满足需求的前提下，尽量把大请求放在空间最充足的节点上，减少碎片化，达到更高的资源利用率。
+
 ## 规格说明
 
 任务背景、接口语义与实现记录详见 `routing.md`，其中的 `Implementation Notes` 会随着开发阶段持续更新。
