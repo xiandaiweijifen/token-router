@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 
 from app import routes
+from app.config import load_config
 from app.token_allocator import TokenAllocator
 
 app = FastAPI()
-allocator = TokenAllocator(node_count=3, node_quota=300)
+config = load_config()
+allocator = TokenAllocator(node_count=config.node_count, node_quota=config.node_quota)
 
 
 def allocator_dependency() -> TokenAllocator:
