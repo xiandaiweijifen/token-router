@@ -67,3 +67,4 @@ POST /free
 - `/alloc`、`/free` HTTP 接口接入核心逻辑，定义请求/响应模型并映射 429/409/404 等错误。
 - 新增 API 集成测试，使用 FastAPI `TestClient` 验证成功分配、过载和释放路径。
 - 通过 `TOKEN_ROUTER_NODE_COUNT` 与 `TOKEN_ROUTER_NODE_QUOTA` 环境变量配置节点规模和每节点预算。
+- `scripts/run_sample.sh`（或 README 中提供的 PowerShell 函数）可重放示例请求序列，方便端到端验收。
