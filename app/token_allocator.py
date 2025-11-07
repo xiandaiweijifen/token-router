@@ -38,7 +38,7 @@ class AllocationResult:
 
 
 class TokenAllocator:
-    """In-memory token allocator with per-node quota tracking."""
+    """Concurrent-safe allocator that tracks per-node quotas in memory."""
 
     def __init__(self, node_count: int, node_quota: int) -> None:
         if node_count <= 0:
@@ -53,6 +53,7 @@ class TokenAllocator:
         self._allocations: Dict[str, AllocationRecord] = {}
 
     def allocate(self, request_id: str, token_count: int) -> AllocationResult:
+        """Reserve `token_count` for the request, creating the allocation if capacity allows."""
         if not request_id:
             raise ValueError("request_id is required")
         if token_count <= 0:
@@ -82,6 +83,7 @@ class TokenAllocator:
             )
 
     def free(self, request_id: str) -> AllocationRecord:
+        """Release tokens previously reserved for `request_id`."""
         if not request_id:
             raise ValueError("request_id is required")
 
@@ -97,7 +99,7 @@ class TokenAllocator:
             return record
 
     def stats(self) -> List[int]:
-        """Return a copy of the per-node remaining quota."""
+        """Return a snapshot of remaining quotas per node (for introspection/tests)."""
         with self._lock:
             return list(self._remaining)
 
@@ -117,6 +119,7 @@ class TokenAllocator:
         if not best_candidates:
             return None
 
+        # Use round-robin among nodes with identical remaining quota to avoid hotspots.
         selected_index = best_candidates[self._tie_break_counter % len(best_candidates)]
         self._tie_break_counter += 1
         return selected_index

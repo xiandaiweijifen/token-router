@@ -12,6 +12,7 @@ router = APIRouter()
 
 
 def get_allocator() -> TokenAllocator:
+    """Dependency placeholder overridden in app.main."""
     raise RuntimeError("TokenAllocator dependency not wired")
 
 
