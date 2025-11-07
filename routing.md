@@ -37,3 +37,22 @@ POST /free
 {"method": "POST", "path": "/alloc", "body": {"request_id": "req-5", "token_count": 250}}
 {"method": "POST", "path": "/free", "body": {"request_id": "req-4"}}
 {"method": "POST", "path": "/free", "body": {"request_id": "req-5"}}
+
+## Implementation Notes
+
+### 需求假设
+- N、M 在服务启动时通过配置文件或环境变量注入，运行期保持不变。
+- `request_id` 全局唯一，重复请求视为幂等操作。
+- 服务仅在单实例内存中维护状态，不做跨进程持久化。
+- 错误响应必须遵循固定 JSON 格式，客户端可依赖其进行重试或警报。
+
+### 模块划分
+- HTTP 层：负责 JSON 解析、参数校验和统一响应。
+- 调度/分配模块：维护节点剩余额度与 `request_id -> allocation` 映射，提供 `Alloc` / `Free` 接口。
+- 状态存储：跟踪每个节点剩余 token 和历史请求记录。
+
+### 并发控制
+- 调度模块通过互斥锁或读写锁保护共享状态，确保原子性。
+- `/free` 遇到未知 `request_id` 时立即返回 404，避免错误释放。
+- 后续可探索分片锁或 CAS 提升并发度，但首版以正确性为先。
+
