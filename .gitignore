@@ -1,4 +1,5 @@
-tests/__pycache__/test_token_allocator.cpython-313-pytest-8.4.2.pyc
+__pycache__/
+*.py[cod]
 app/__pycache__/__init__.cpython-313.pyc
 app/__pycache__/token_allocator.cpython-313.pyc
 tests/__pycache__/conftest.cpython-313-pytest-8.4.2.pyc
