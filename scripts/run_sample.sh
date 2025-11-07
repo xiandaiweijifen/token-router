@@ -9,8 +9,7 @@ alloc() {
   echo "POST /alloc ${request_id} tokens=${token_count}"
   curl -sS -X POST "${BASE_URL}/alloc" \
     -H "Content-Type: application/json" \
-    -d "{\"request_id\":\"${request_id}\",\"token_count\":${token_count}}" \
-    | jq .
+    -d "{\"request_id\":\"${request_id}\",\"token_count\":${token_count}}"
   echo
 }
 
@@ -19,8 +18,7 @@ free_req() {
   echo "POST /free ${request_id}"
   curl -sS -X POST "${BASE_URL}/free" \
     -H "Content-Type: application/json" \
-    -d "{\"request_id\":\"${request_id}\"}" \
-    | jq .
+    -d "{\"request_id\":\"${request_id}\"}"
   echo
 }
 
