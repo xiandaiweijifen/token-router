@@ -12,8 +12,7 @@ router = APIRouter()
 
 
 def get_allocator() -> TokenAllocator:
-    # Placeholder dependency; actual instance will be injected in main.py
-    raise NotImplementedError
+    raise RuntimeError("TokenAllocator dependency not wired")
 
 
 @router.post(
