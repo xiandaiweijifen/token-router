@@ -56,6 +56,6 @@ def test_allocator_picks_node_with_most_remaining_capacity() -> None:
     allocator.allocate("req-2", 10)
 
     result = allocator.allocate("req-3", 50)
-    # The third allocation should land on node 1, which still has 90 remaining.
-    assert result.node_id == 1
-    assert result.remaining_quota == 40
+    # Node 2 retains the full 100 quota before this request, so it should be chosen.
+    assert result.node_id == 2
+    assert result.remaining_quota == 50
