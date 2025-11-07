@@ -53,6 +53,6 @@ BASE_URL=http://localhost:8000 ./scripts/run_sample.sh
 
 调度器会优先选择剩余 quota 最大、且能够满足请求 token 数的节点（最大剩余优先）。这种策略在满足需求的前提下，尽量把大请求放在空间最充足的节点上，减少碎片化，达到更高的资源利用率。
 
-## 规格说明
+## Specification
 
 任务背景、接口语义与实现记录详见 `routing.md`，其中的 `Implementation Notes` 会随着开发阶段持续更新。
